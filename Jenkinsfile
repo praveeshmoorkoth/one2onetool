@@ -37,11 +37,32 @@ pipeline {
         // Deploy the docker image to a specific env
         stage('Deploy the docker image'){
             steps{
-                ansiblePlaybook -v extras: "-e release_tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: "ansible/${env.BRANCH_NAME}.inventory"
+                ansiblePlaybook extras: "-e release_tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: "ansible/${env.BRANCH_NAME}.inventory -v"
             }
         }
     }
+    post {
+        always {
+            echo 'Sending Emails!'
+            notifyBuild()
+        }
+    }
 }
+
+def notifyBuild() {
+	// Send build notification function
+	def subject = "${currentBuild.currentResult}: Jenkins Job '${env.JOB_NAME} Buiild#: [${env.BUILD_NUMBER}]'"
+	def details = "<br><b> Jenkins Job ${currentBuild.currentResult}: JobName: ${env.JOB_NAME}, Build#: ${env.BUILD_NUMBER} </b><br><br> Refer the console logs at: ${env.BUILD_URL} <br><br>Note: Please do not reply to this email"
+  	// Send notifications
+
+  	emailext (
+    	subject: subject,
+      	body: details,
+       	to: 'praveeshtestgm@gmail.com',
+       	recipientProviders: [[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']],
+    )
+}
+    
 // Capture docker image tab with combination of git_commit, branch and build number
 def getDockerTag(){
     def commit_id  = sh script: 'git rev-parse --short HEAD', returnStdout: true
