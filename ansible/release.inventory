@@ -1,2 +1,2 @@
-[webserver]
-10.0.0.105 ansible_user=appuser ansible_connection=ssh
+[webservers]
+10.0.0.105 ansible_user=centos ansible_connection=ssh
