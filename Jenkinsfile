@@ -4,6 +4,7 @@ pipeline {
     environment{
         DOCKER_TAG = getDockerTag()
         BRANCH_NAME = getGitBranch()
+        FILE_NAME = getDATAFILE()
     }
 
     stages{
@@ -19,7 +20,7 @@ pipeline {
         // Build docker image
         stage('Build Docker Image'){
             steps{
-                sh 'docker build . -t praveeshmoorkoth/mylab:${DOCKER_TAG}'
+                sh 'docker build . -t praveeshmoorkoth/mylab:${DOCKER_TAG} --build-arg DATA_FILE_VAR=${FILE_NAME}'
             }
         }
 
@@ -56,4 +57,18 @@ def getGitBranch(){
     def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
     git_branch_name  = git_branch_name.trim()
     return git_branch_name
+}
+
+def getDATAFILE(){
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
+    if (git_branch_name.equals("staging"))
+    {
+        file = 'Questions-test.json'
+    }
+    elsif (git_branch_name.equals("release"))
+    {
+        file = 'Questions.json'
+    }
+    return file
 }
