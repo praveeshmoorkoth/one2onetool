@@ -42,25 +42,27 @@ pipeline {
         }
     }
 }
-// Capture git branch
-def getGitBranch(){
-    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
-    return git_branch_name
-}
-
 // Capture docker image tab with combination of git_commit, branch and build number
 def getDockerTag(){
     def commit_id  = sh script: 'git rev-parse --short HEAD', returnStdout: true
     commit_id  = commit_id.trim()
-    def git_branch_name  = getGitBranch ()
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
     build_number=sh script: 'echo ${BUILD_NUMBER}', returnStdout: true
     def tag =git_branch_name+"_"+commit_id+"_"+build_number
     return tag
 }
+// Capture git branch
+def getGitBranch(){
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
+    return git_branch_name
+}
 
 // Prepare env specific DATAFILE
 def getDATAFILE(){
-    def git_branch_name  = getGitBranch ()
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
     file = 'Questions.json'
     if (git_branch_name.equals("staging"))
     {
