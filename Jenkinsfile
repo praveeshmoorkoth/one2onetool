@@ -8,13 +8,6 @@ pipeline {
 
     stages{
 
-        // Checkout source code from git-repo.Credentials of the git repo is stored in GitCredentials  
-        stage('scm-checkout'){
-            steps{
-                git credentialsId: 'GitCredentials', url: 'https://github.com/praveeshmoorkoth/one2onetool.git'
-            }
-        }
-
         // Run unit test cases  
         stage('unit-test') {
             steps{
