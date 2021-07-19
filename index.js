@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount routes
-app.use('/mylab', routes);
+app.use('/', routes);
 
 // Start server
 var port = process.env.PORT || '3000';
