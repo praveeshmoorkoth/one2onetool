@@ -22,6 +22,9 @@
       set_fact:
         ansible_python_interpreter: /usr/bin/python3
 
+    - debug:
+        msg: "{{image_name}}:{{release_tag}}"
+
     - name: Create  container
       docker_container:
         name: nodeapp
