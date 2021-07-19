@@ -8,13 +8,6 @@ pipeline {
 
     stages{
 
-        // Checkout source code from git-repo.Credentials of the git repo is stored in GitCredentials  
-        stage('scm-checkout'){
-            steps{
-                git credentialsId: 'GitCredentials', url: 'https://github.com/praveeshmoorkoth/one2onetool.git'
-            }
-        }
-
         // Run unit test cases  
         stage('unit-test') {
             steps{
@@ -52,7 +45,7 @@ pipeline {
 def getDockerTag(){
     def commit_id  = sh script: 'git rev-parse --short HEAD', returnStdout: true
     commit_id  = commit_id.trim()
-    def git_branch_name  = sh script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
     git_branch_name  = git_branch_name.trim()
     build_number=sh script: 'echo ${BUILD_NUMBER}', returnStdout: true
     def tag =git_branch_name+"_"+commit_id+"_"+build_number
@@ -60,7 +53,7 @@ def getDockerTag(){
 }
 
 def getGitBranch(){
-    def git_branch_name  = sh script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true
+    def git_branch_name  = sh script: 'echo ${BRANCH_NAME}', returnStdout: true
     git_branch_name  = git_branch_name.trim()
     return git_branch_name
 }
