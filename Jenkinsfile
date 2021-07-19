@@ -3,6 +3,7 @@ pipeline {
     // Prepare Docker Image tag 
     environment{
         DOCKER_TAG = getDockerTag()
+        BRANCH_NAME = getGitBranch()
     }
 
     stages{
@@ -42,14 +43,24 @@ pipeline {
         // Deploy the docker image to a specific env
         stage('Deploy the docker image'){
             steps{
-                ansiblePlaybook extras: "-e tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: 'ansible/{env.BRANCH_NAME}.inventory'
+                ansiblePlaybook extras: "-e release_tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: "ansible/${env.BRANCH_NAME}.inventory"
             }
         }
     }
-
 }
 
 def getDockerTag(){
-    def tag  = sh script: 'git rev-parse HEAD', returnStdout: true
+    def commit_id  = sh script: 'git rev-parse --short HEAD', returnStdout: true
+    commit_id  = commit_id.trim()
+    def git_branch_name  = sh script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
+    build_number=sh script: 'echo ${BUILD_NUMBER}', returnStdout: true
+    def tag =git_branch_name+"_"+commit_id+"_"+build_number
     return tag
+}
+
+def getGitBranch(){
+    def git_branch_name  = sh script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true
+    git_branch_name  = git_branch_name.trim()
+    return git_branch_name
 }
