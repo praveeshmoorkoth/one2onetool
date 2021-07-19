@@ -1,0 +1,2 @@
+[webserver]
+10.0.0.214 ansible_user=appuser ansible_connection=ssh
