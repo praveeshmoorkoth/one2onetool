@@ -37,7 +37,7 @@ pipeline {
         // Deploy the docker image to a specific env
         stage('Deploy the docker image'){
             steps{
-                ansiblePlaybook extras: "-e release_tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: "ansible/${env.BRANCH_NAME}.inventory -v"
+                ansiblePlaybook extras: "-vvv -e release_tag=${env.DOCKER_TAG}", playbook: 'ansible/deploy.yml',inventory: "ansible/${env.BRANCH_NAME}.inventory"
             }
         }
     }
