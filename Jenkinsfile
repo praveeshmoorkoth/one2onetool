@@ -59,7 +59,7 @@ def notifyBuild() {
     	subject: subject,
       	body: details,
        	to: 'praveeshtestgm@gmail.com',
-       	recipientProviders: [[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider']],
+       	recipientProviders: [[$class: 'CulpritsRecipientProvider'],[$class: 'RequesterRecipientProvider'],[$class: 'DevelopersRecipientProvider']],
     )
 }
     
